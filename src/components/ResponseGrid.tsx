@@ -1,27 +1,46 @@
-import Card from 'react-bootstrap/Card';
+import Card, { CardProps } from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import { borderTypesArray, shuffleArray } from '../lib/utils';
+import { Answer } from '../lib/types';
+import { memo, useMemo } from 'react';
 
-function ResponseGrid() {
+type ResponseGridProps = {
+  answers: Answer[];
+  onAnswer: (answer: Answer) => void;
+  isQuestionAnswered: boolean;
+};
+
+export default memo(function ResponseGrid({
+  answers,
+  onAnswer,
+  isQuestionAnswered,
+}: ResponseGridProps) {
+  const shuffledBorderArray = useMemo(() => shuffleArray(borderTypesArray), []);
+  const handleClick = (answer: Answer) => {
+    onAnswer(answer);
+  };
+
   return (
     <Row xs={1} md={2} className="g-4">
-      {Array.from({ length: 4 }).map((_, idx) => (
+      {answers.map((answer, idx) => (
         <Col key={idx}>
-          <Card>
-            <Card.Img variant="top" src="holder.js/100px160" />
-            <Card.Body>
-              <Card.Title>Card title</Card.Title>
-              <Card.Text>
-                This is a longer card with supporting text below as a natural
-                lead-in to additional content. This content is a little bit
-                longer.
-              </Card.Text>
+          <Card
+            border={shuffledBorderArray[idx] as CardProps['border']}
+            onClick={() => handleClick(answer)}
+          >
+            <Card.Body style={{ height: '150px' }}>
+              <Card.Title>Réponse {idx + 1}</Card.Title>
+              <Card.Text>{answer.text}</Card.Text>
+              {isQuestionAnswered && answer.isCorrect && (
+                <Card.Text className="text-success text-center">
+                  La bonne réponse
+                </Card.Text>
+              )}
             </Card.Body>
           </Card>
         </Col>
       ))}
     </Row>
   );
-}
-
-export default ResponseGrid;
+});

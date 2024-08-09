@@ -4,14 +4,17 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from '@tanstack/react-router';
+import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
+
+const ICON_SIZE = 24;
 
 function AppNav() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   const toggleDarkMode = () => {
     const html = document.querySelector('html');
     html?.setAttribute('data-bs-theme', darkMode ? 'light' : 'dark');
-    setDarkMode(!darkMode);
+    setDarkMode((prev) => !prev);
   };
 
   return (
@@ -38,9 +41,13 @@ function AppNav() {
                 Separated link
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link onClick={toggleDarkMode}>
-              {darkMode ? 'Light' : 'Dark'} Mode
-            </Nav.Link>
+            <Nav.Item onClick={toggleDarkMode} className="align-self-center">
+              {darkMode ? (
+                <MdOutlineLightMode size={ICON_SIZE} />
+              ) : (
+                <MdOutlineDarkMode size={ICON_SIZE} />
+              )}
+            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Container>
